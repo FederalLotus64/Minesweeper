@@ -56,10 +56,10 @@ function Style(num) {
                     } else if (cells[Merge(xx, yy)].style.backgroundColor == "darkgreen") {
                         cells[Merge(xx, yy)].style.backgroundColor = "grey";
                     } else if (cells[Merge(xx, yy)].style.backgroundColor == "black") {
-                        if ((x + (y % 2)) % 2 == 1) {
-                            cells[Merge(xx, yy)].style.backgroundColor = "grey";
-                        } else  {
+                        if ((xx + (yy % 2)) % 2 == 1) {
                             cells[Merge(xx, yy)].style.backgroundColor = "darkgrey";
+                        } else  {
+                            cells[Merge(xx, yy)].style.backgroundColor = "grey";
                         }
                     }
                     if (map[Merge(xx, yy)] == 0) {
@@ -80,9 +80,9 @@ function Style(num) {
             cells[num].style.backgroundColor = "grey";
         } else if (cells[num].style.backgroundColor == "black") {
             if ((x + (y % 2)) % 2 == 1) {
-                cells[num].style.backgroundColor = "grey";
-            } else  {
                 cells[num].style.backgroundColor = "darkgrey";
+            } else  {
+                cells[num].style.backgroundColor = "grey";
             }
         }
         if (map[num] == 0) {
