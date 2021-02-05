@@ -9,11 +9,26 @@ let origin = 0, bombs = 0, exposed = 0, x = 0, y = 0;
 let win = false, lost = false;
 
 //Generate board
+let header = document.createElement('header');
 window.onload = function() {
-    document.body.style.cssText = "margin: 0; padding: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center;";
-    let path = document.createElement('div');
-    path.style.cssText = "width: 320px; height: 320px; display: flex; flex-wrap: wrap; box-shadow: 0 0 20px 2px black;";
-    document.body.appendChild(path);
+    Update(mql);
+    document.body.style.cssText = "margin: 0; padding: 0;";
+    header.style.cssText = "width: 100%; height: 10vh; display: grid; grid-template-columns: 256px auto;";
+    document.body.appendChild(header);
+    let title = document.createElement('h1');
+    title.innerHTML = "Minesweeper";
+    title.style.cssText = "font-family: Arial; text-decoration: underline; display: flex; align-items: center; justify-content: center;";
+    header.appendChild(title);
+    let main = document.createElement('main');
+    main.style.cssText = "width: 100%; height: 85vh; display: flex; align-items: center; justify-content: center;";
+    document.body.appendChild(main);
+    let arrow = document.createElement('div');
+    arrow.innerHTML = '&DownArrowBar; About &DownArrowBar;';
+    arrow.style.cssText = "width: 100%; height: 5vh; display: flex; align-items: center; justify-content: center;";
+    document.body.appendChild(arrow);
+    let board = document.createElement('div');
+    board.style.cssText = "width: 320px; height: 320px; display: flex; flex-wrap: wrap; box-shadow: 0 0 20px 2px black;";
+    main.appendChild(board);
 
     for (let yy = 0; yy < 8; yy++) {
         for (let xx = 0; xx < 8; xx++) {
@@ -27,10 +42,20 @@ window.onload = function() {
             } else  {
                 e.style.backgroundColor = "darkgreen";
             }
-            path.appendChild(e);
+            board.appendChild(e);
         }
-    }    
+    } 
 }
+
+let mql = matchMedia('(max-width: 425px)');
+function Update(e) {
+    if (e.matches) {
+        header.style.gridTemplateColumns = "1fr";
+    } else {
+        header.style.gridTemplateColumns = "256px auto";
+    }
+}
+mql.addListener(Update);
 
 //Array <=> 2D Array conversion
 function Split(num) {
@@ -201,11 +226,11 @@ function ExposeAll() {
     for (let i = 0; i < map.length; i++) {
         Style(i);
         state[i] = -1;
-    }
-    if (win) {
-        document.body.style.backgroundColor = "green";
-    } else if (lost) {
-        document.body.style.backgroundColor = "red";
+        if (win && map[i] >= 10) {
+            cells[i].style.backgroundColor = "green";
+        } else if (lost && map[i] >= 10) {
+            cells[i].style.backgroundColor = "red";
+        }
     }
 }
 
