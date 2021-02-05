@@ -5,7 +5,7 @@ for (let i = 0; i < map.length; i++) {
     map[i] = 0;
     state[i] = 0;
 }
-let origin = -1, bombs = 0, exposed = 0, x = 0, y = 0;
+let origin = 0, bombs = 0, exposed = 0, x = 0, y = 0;
 let win = false, lost = false;
 
 //Generate board
@@ -20,7 +20,7 @@ window.onload = function() {
             let e = document.createElement('div');
             e.className = 'cell';
             e.setAttribute( "onClick", "Show(" + Merge(xx, yy) + ")" );
-            e.setAttribute("onContextMenu", "Flag(" + Merge(xx, yy) + "); return false;" );
+            e.setAttribute("onContextMenu", "Flag(" + Merge(xx, yy) + ");  return false;" );
             e.style.cssText = "width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;";
             if ((xx + (yy % 2)) % 2 == 1) {
                 e.style.backgroundColor = "green";
@@ -98,7 +98,7 @@ function Style(num) {
 
 //Show cell
 function Show(num) {
-    if (origin == -1) {
+    if (origin == 0) {
         origin++;
         PlaceBombs(num);  
         Numbers(); 
@@ -121,7 +121,7 @@ function Show(num) {
 function PlaceBombs(num) {
     while (bombs < 8) {
         for (let i = 0; i < map.length; i++) {
-            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10 &&i != num) {
+            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10 && i != num) {
                 map[i] = 10;
                 bombs++;
             }
@@ -204,14 +204,8 @@ function ExposeAll() {
     }
     if (win) {
         document.body.style.backgroundColor = "green";
-        setTimeout(function() {
-            alert("Win!");
-        },10)
     } else if (lost) {
         document.body.style.backgroundColor = "red";
-        setTimeout(function() {
-            alert("Lost!");
-        },10)
     }
 }
 
