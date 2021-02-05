@@ -6,13 +6,13 @@ for (let i = 0; i < map.length; i++) {
     state[i] = 0;
 }
 let origin = 0, bombs = 0, exposed = 0, x = 0, y = 0;
-let win = false, lost = false, header;
+let win = false, lost = false;
 
 //Generate HTML + CSS
+let header = document.createElement('header');
 window.onload = function() {
     Update(mql);
     document.body.style.cssText = "margin: 0; padding: 0;";
-    header = document.createElement('header');
     header.style.cssText = "width: 100%; height: 10vh; display: grid; grid-template-columns: 256px auto;";
     document.body.appendChild(header);
     let title = document.createElement('h1');
