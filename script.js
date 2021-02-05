@@ -204,10 +204,14 @@ function ExposeAll() {
     }
     if (win) {
         document.body.style.backgroundColor = "green";
-        console.log("Win!");
+        setTimeout(function() {
+            alert("Win!");
+        },10)
     } else if (lost) {
         document.body.style.backgroundColor = "red";
-        console.log("Lost!");
+        setTimeout(function() {
+            alert("Lost!");
+        },10)
     }
 }
 
