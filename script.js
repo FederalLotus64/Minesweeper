@@ -104,13 +104,13 @@ function Show(num) {
         Numbers(); 
     }
 
-    if (map[num] >= 10) {
+    if (map[num] >= 10 && cells[num].style.backgroundColor != "black") {
         lost = true;
-    } else if (map[num] == 0) {
+    } else if (map[num] == 0 && cells[num].style.backgroundColor != "black") {
         Style(num);
         state[num] = -1;
         ExposeEmpty(num);
-    } else {
+    } else if (cells[num].style.backgroundColor != "black") {
         Style(num);
         state[num] = -1;
     }
@@ -121,7 +121,7 @@ function Show(num) {
 function PlaceBombs(num) {
     while (bombs < 8) {
         for (let i = 0; i < map.length; i++) {
-            if (Math.ceil(Math.random()*16) == 1 && i != num) {
+            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10 &&i != num) {
                 map[i] = 10;
                 bombs++;
             }
