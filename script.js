@@ -20,12 +20,8 @@ window.onload = function() {
     title.style.cssText = "font-family: Arial; text-decoration: underline; display: flex; align-items: center; justify-content: center;";
     header.appendChild(title);
     let main = document.createElement('main');
-    main.style.cssText = "width: 100%; height: 85vh; display: flex; align-items: center; justify-content: center;";
+    main.style.cssText = "width: 100%; height: 90vh; display: flex; align-items: center; justify-content: center;";
     document.body.appendChild(main);
-    let arrow = document.createElement('div');
-    arrow.innerHTML = '&DownArrowBar; About &DownArrowBar;';
-    arrow.style.cssText = "width: 100%; height: 5vh; display: flex; align-items: center; justify-content: center;";
-    document.body.appendChild(arrow);
     let board = document.createElement('div');
     board.style.cssText = "width: 320px; height: 320px; display: flex; flex-wrap: wrap; box-shadow: 0 0 20px 2px black;";
     main.appendChild(board);
