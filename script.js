@@ -9,16 +9,19 @@ let origin = 0, bombs = 0, exposed = 0, x = 0, y = 0;
 let win = false, lost = false;
 
 //Generate HTML + CSS
-let header = document.createElement('header');
 window.onload = function() {
-    Update(mql);
     document.body.style.cssText = "margin: 0; padding: 0;";
-    header.style.cssText = "width: 100%; height: 10vh; display: grid; grid-template-columns: 256px auto;";
+    let header = document.createElement('header');
+    header.style.cssText = "width: 100%; height: 10vh; display: flex; justify-content: center;";
     document.body.appendChild(header);
-    let title = document.createElement('h1');
-    title.innerHTML = "Minesweeper";
-    title.style.cssText = "font-family: Arial; text-decoration: underline; display: flex; align-items: center; justify-content: center;";
-    header.appendChild(title);
+    let dropdown = document.createElement('div');
+    dropdown.style.cssText = "width: 320px; height: 10vh; display: flex; align-items: center; justify-content: center;";
+    header.appendChild(dropdown);
+    let button = document.createElement('button');
+    button.setAttribute("onClick", "Dropdown()");
+    button.innerHTML = "<u>Minesweeper</u> ▼";
+    button.style.cssText = "margin: 0; padding: 0; width: 256px; height: 64px; font-family: arial; font-size: 1.5em; border-style: none; outline: none;";
+    dropdown.appendChild(button);
     let main = document.createElement('main');
     main.style.cssText = "width: 100%; height: 90vh; display: flex; align-items: center; justify-content: center;";
     document.body.appendChild(main);
@@ -40,18 +43,8 @@ window.onload = function() {
             }
             board.appendChild(e);
         }
-    } 
-}
-
-let mql = matchMedia('(max-width: 425px)');
-function Update(e) {
-    if (e.matches) {
-        header.style.gridTemplateColumns = "1fr";
-    } else {
-        header.style.gridTemplateColumns = "256px auto";
     }
 }
-mql.addListener(Update);
 
 //Array <=> 2D Array conversion
 function Split(num) {
@@ -102,7 +95,7 @@ function Style(num) {
         } else if (cells[num].style.backgroundColor == "black") {
             if ((x + (y % 2)) % 2 == 1) {
                 cells[num].style.backgroundColor = "darkgrey";
-            } else  {
+            } else {
                 cells[num].style.backgroundColor = "grey";
             }
         }
@@ -121,8 +114,8 @@ function Style(num) {
 function Show(num) {
     if (origin == 0) {
         origin++;
-        PlaceBombs(num);  
-        Numbers(); 
+        PlaceBombs(num);
+        Numbers();
     }
 
     if (map[num] >= 10 && cells[num].style.backgroundColor != "black") {
@@ -165,7 +158,7 @@ function Numbers() {
                     }
                 }
             }
-        } 
+        }
     }
 }
 
