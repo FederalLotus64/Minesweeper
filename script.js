@@ -5,36 +5,31 @@ for (let i = 0; i < map.length; i++) {
     map[i] = 0;
     state[i] = 0;
 }
+
 let origin = 0, bombs = 0, exposed = 0, x = 0, y = 0;
 let win = false, lost = false;
 
 //Generate HTML + CSS
-window.onload = function() {
-    document.body.style.cssText = "margin: 0; padding: 0;";
-    let header = document.createElement('header');
-    header.style.cssText = "width: 100%; height: 10vh; display: flex; justify-content: center;";
-    document.body.appendChild(header);
-    let dropdown = document.createElement('div');
-    dropdown.style.cssText = "width: 320px; height: 10vh; display: flex; align-items: center; justify-content: center;";
-    header.appendChild(dropdown);
-    let button = document.createElement('button');
-    button.setAttribute("onClick", "Dropdown()");
-    button.innerHTML = "<u>Minesweeper</u> ▼";
-    button.style.cssText = "margin: 0; padding: 0; width: 256px; height: 64px; font-family: arial; font-size: 1.5em; border-style: none; outline: none;";
-    dropdown.appendChild(button);
-    let main = document.createElement('main');
-    main.style.cssText = "width: 100%; height: 90vh; display: flex; align-items: center; justify-content: center;";
-    document.body.appendChild(main);
+let container;
+export function LoadSweeper() {
+    container = document.createElement('div');
+    container.id = "sweeper";
+    container.style.cssText = "width: 100%; height: " + (window.innerHeight-64) + "px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px black;";
     let board = document.createElement('div');
     board.style.cssText = "width: 320px; height: 320px; display: flex; flex-wrap: wrap; box-shadow: 0 0 20px 2px black;";
-    main.appendChild(board);
+    container.appendChild(board);
 
     for (let yy = 0; yy < 8; yy++) {
         for (let xx = 0; xx < 8; xx++) {
             let e = document.createElement('div');
             e.className = 'cell';
-            e.setAttribute( "onClick", "Show(" + Merge(xx, yy) + ")" );
-            e.setAttribute("onContextMenu", "Flag(" + Merge(xx, yy) + ");  return false;" );
+            e.addEventListener("click", () => {
+                Show(Merge(xx, yy));
+            });
+            e.addEventListener("contextmenu", (event) => { 
+                event.preventDefault();
+                Flag(Merge(xx, yy));
+            });
             e.style.cssText = "width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;";
             if ((xx + (yy % 2)) % 2 == 1) {
                 e.style.backgroundColor = "green";
@@ -45,6 +40,7 @@ window.onload = function() {
         }
     }
 }
+export {container};
 
 //Array <=> 2D Array conversion
 function Split(num) {
