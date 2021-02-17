@@ -1,26 +1,109 @@
-let map = new Array(64);
-let state = new Array(64);
-let queue = new Array();
-for (let i = 0; i < map.length; i++) {
-    map[i] = 0;
-    state[i] = 0;
-}
-
+let map, state, queue;
 let origin = 0, bombs = 0, exposed = 0, x = 0, y = 0;
 let win = false, lost = false;
 
 //Generate HTML + CSS
-let container;
-export function LoadSweeper() {
-    container = document.createElement('div');
-    container.id = "sweeper";
-    container.style.cssText = "width: 100%; height: " + (window.innerHeight-64) + "px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px black;";
-    let board = document.createElement('div');
-    board.style.cssText = "width: 320px; height: 320px; display: flex; flex-wrap: wrap; box-shadow: 0 0 20px 2px black;";
-    container.appendChild(board);
+let header, dropdown, button, content, link1, link2, title, main, container, reset, settings, select, option, board, size = 8;
 
-    for (let yy = 0; yy < 8; yy++) {
-        for (let xx = 0; xx < 8; xx++) {
+window.onload = function() {
+    document.body.style.cssText = "margin: 0; padding: 0; background-color: #d1d1d1;";
+    
+    header = document.createElement('header');
+    header.style.cssText = "width: 100%; height: 64px; background-color: white; box-shadow: 0 0 20px 2px black;";
+
+    title = document.createElement('h1');
+    title.style.cssText = "margin: auto; padding: 0; width: 192px; height: 64px; font-family: Arial; font-weight: bold; display: flex; align-items: center; justify-content: center;";
+    title.innerHTML = "Minesweeper";
+    header.appendChild(title);
+
+    document.body.appendChild(header);
+
+    main = document.createElement('main');
+    main.style.cssText = "width: 100%;";
+
+    container = document.createElement('div');
+    container.style.cssText = "width: 100%; height: " + (window.innerHeight-64) + "px; display: grid; grid-template-columns: auto 128px 128px auto; grid-template-rows: 128px auto 128px; box-shadow: 0 -10px black inset;";
+
+    reset = document.createElement('div');
+    reset.style.cssText = "margin: auto; width: 80px; height: 40px; font-family: Arial; font-weight: bold; display: flex; align-items: center; justify-content: center; background-color: white; grid-column-start: 2;";
+    reset.addEventListener("click", () => { 
+        size = select.options[select.selectedIndex].value;
+        Load(size); 
+    });
+    reset.innerHTML = "Reset";
+    container.appendChild(reset);
+
+    settings = document.createElement('form');
+    settings.style.cssText = "width: 128px; height: 128px; display: flex; align-items: center; justify-content: center; grid-column-start: 3;";
+
+    select = document.createElement('select');
+    select.style.cssText = "width: 80px; height: 40px; font-size: 1em; font-weight: bold; border: none; outline: none;";
+    select.addEventListener("change", () => {
+        size = select.options[select.selectedIndex].value;
+        Load(size);
+    });
+
+    option = document.createElement('option');
+    option.value = "8";
+    option.innerHTML = "Easy";
+    select.appendChild(option);
+
+    option = document.createElement('option');
+    option.value = "10";
+    option.innerHTML = "Normal";
+    select.appendChild(option);
+
+    option = document.createElement('option');
+    option.value = "16";
+    option.innerHTML = "Hard";
+    select.appendChild(option);
+
+    settings.appendChild(select);
+    container.appendChild(settings);
+
+    board = document.createElement('div');
+    board.style.cssText = "margin: auto; width: 320px; height: 320px; display: flex; flex-wrap: wrap; grid-column: 1 / 5; grid-row-start: 2;box-shadow: 0 0 20px 2px black;";
+
+    Load(size);
+
+    document.body.appendChild(main);
+}
+
+window.onclick = function(e) {
+    if (e.target.matches("#btn")) {
+        if (content.style.display == "none") {
+            content.style.display = "block";
+        } else {
+            content.style.display = "none";
+        }
+    } else {
+        content.style.display = "none";
+    }
+}
+
+function Load(num) {
+    origin = 0;
+    bombs = 0;
+    exposed = 0;
+    win = false;
+    lost = false;
+    Init(num);
+    map = new Array(Math.pow(num, 2));
+    state = new Array(Math.pow(num, 2));
+    queue = new Array();
+    for (let i = 0; i < map.length; i++) {
+        map[i] = 0;
+        state[i] = 0;
+    }
+    PlaceBombs(num);
+    Numbers(); 
+}
+
+function Init(num) {
+    board.innerHTML = "";
+    let a = 320/num;
+    for (let yy = 0; yy < num; yy++) {
+        for (let xx = 0; xx < num; xx++) {
             let e = document.createElement('div');
             e.className = 'cell';
             e.addEventListener("click", () => {
@@ -30,7 +113,7 @@ export function LoadSweeper() {
                 event.preventDefault();
                 Flag(Merge(xx, yy));
             });
-            e.style.cssText = "width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;";
+            e.style.cssText = "width: " + a + "px; height: " + a + "px; display: flex; align-items: center; justify-content: center;";
             if ((xx + (yy % 2)) % 2 == 1) {
                 e.style.backgroundColor = "green";
             } else  {
@@ -39,17 +122,19 @@ export function LoadSweeper() {
             board.appendChild(e);
         }
     }
+
+    container.appendChild(board);
+    main.appendChild(container);
 }
-export {container};
 
 //Array <=> 2D Array conversion
 function Split(num) {
-    x = num%8;
-    y = Math.floor(num/8);
+    x = num%size;
+    y = Math.floor(num/size);
 }
 
 function Merge(x, y) {
-    return y*8 + x;
+    return y*size + x;
 }
 
 let cells = document.getElementsByClassName('cell');
@@ -60,7 +145,7 @@ function Style(num) {
     if (map[num] == 0) {
         for (let yy = y-1; yy < y+2; yy++) {
             for (let xx = x-1; xx < x+2; xx++) {
-                if (xx > -1 && xx < 8 && yy > -1 && yy < 8) {
+                if (xx > -1 && xx < size && yy > -1 && yy < size) {
                     if (cells[Merge(xx, yy)].style.backgroundColor == "green") {
                         cells[Merge(xx, yy)].style.backgroundColor = "darkgrey";
                     } else if (cells[Merge(xx, yy)].style.backgroundColor == "darkgreen") {
@@ -108,12 +193,6 @@ function Style(num) {
 
 //Show cell
 function Show(num) {
-    if (origin == 0) {
-        origin++;
-        PlaceBombs(num);
-        Numbers();
-    }
-
     if (map[num] >= 10 && cells[num].style.backgroundColor != "black") {
         lost = true;
     } else if (map[num] == 0 && cells[num].style.backgroundColor != "black") {
@@ -129,13 +208,13 @@ function Show(num) {
 
 //Place bombs
 function PlaceBombs(num) {
-    while (bombs < 8) {
+    while (bombs < num) {
         for (let i = 0; i < map.length; i++) {
-            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10 && i != num) {
+            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10) {
                 map[i] = 10;
                 bombs++;
             }
-            if (bombs == 8) {
+            if (bombs == num) {
                 break;
             }
         }
@@ -149,7 +228,7 @@ function Numbers() {
             Split(i);
             for (let yy = y-1; yy < y+2; yy++) {
                 for (let xx = x-1; xx < x+2; xx++) {
-                    if (xx > -1 && xx < 8 && yy > -1 && yy < 8) {
+                    if (xx > -1 && xx < size && yy > -1 && yy < size) {
                         map[Merge(xx, yy)]++;
                     }
                 }
@@ -163,7 +242,7 @@ function ExposeEmpty(num) {
     Split(num);
     for (let yy = y-1; yy < y+2; yy++) {
         for (let xx = x-1; xx < x+2; xx++) {
-            if (xx > -1 && xx < 8 && yy > -1 && yy < 8) {
+            if (xx > -1 && xx < size && yy > -1 && yy < size) {
                 if (queue.includes(Merge(xx, yy)) == false && map[Merge(xx, yy)] == 0 && state[Merge(xx, yy)] != -1) {
                     queue.push(Merge(xx, yy));
                 }
@@ -227,7 +306,7 @@ function Check() {
             exposed++;
         }
     }
-    if (exposed + bombs == 64) {
+    if (exposed + bombs == (Math.pow(size, 2))) {
         win = true;
     }
     if (win || lost) {
