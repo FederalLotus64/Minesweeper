@@ -202,11 +202,11 @@ function Show(num) {
 //Place bombs
 function PlaceBombs(num) {
     if (size == 8) {
-        NumBombs = 10;
+        NumBombs = 8;
     } else if (size == 16) {
-        NumBombs = 40;
+        NumBombs = 32;
     } else if (size == 20) {
-        NumBombs = 64;
+        NumBombs = 50;
     }
 
     while (bombs < NumBombs) {
