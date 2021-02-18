@@ -69,18 +69,6 @@ window.onload = function() {
     document.body.appendChild(main);
 }
 
-window.onclick = function(e) {
-    if (e.target.matches("#btn")) {
-        if (content.style.display == "none") {
-            content.style.display = "block";
-        } else {
-            content.style.display = "none";
-        }
-    } else {
-        content.style.display = "none";
-    }
-}
-
 function Load(num) {
     origin = 0;
     bombs = 0;
