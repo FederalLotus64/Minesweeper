@@ -1,5 +1,5 @@
 let map, state, queue;
-let origin = 0, bombs = 0, exposed = 0, x = 0, y = 0;
+let origin = 0, bombs = 0, NumBombs, exposed = 0, x = 0, y = 0;
 let win = false, lost = false;
 
 //Generate HTML + CSS
@@ -49,12 +49,12 @@ window.onload = function() {
     select.appendChild(option);
 
     option = document.createElement('option');
-    option.value = "10";
+    option.value = "16";
     option.innerHTML = "Normal";
     select.appendChild(option);
 
     option = document.createElement('option');
-    option.value = "16";
+    option.value = "20";
     option.innerHTML = "Hard";
     select.appendChild(option);
 
@@ -95,8 +95,6 @@ function Load(num) {
         map[i] = 0;
         state[i] = 0;
     }
-    PlaceBombs(num);
-    Numbers(); 
 }
 
 function Init(num) {
@@ -193,6 +191,12 @@ function Style(num) {
 
 //Show cell
 function Show(num) {
+    if (origin == 0) {
+        PlaceBombs(num);
+        Numbers(); 
+        origin++;
+    }
+
     if (map[num] >= 10 && cells[num].style.backgroundColor != "black") {
         lost = true;
     } else if (map[num] == 0 && cells[num].style.backgroundColor != "black") {
@@ -203,14 +207,23 @@ function Show(num) {
         Style(num);
         state[num] = -1;
     }
+
     Check();
 }
 
 //Place bombs
 function PlaceBombs(num) {
-    while (bombs < num) {
+    if (size == 8) {
+        NumBombs = 10;
+    } else if (size == 16) {
+        NumBombs = 40;
+    } else if (size == 20) {
+        NumBombs = 64;
+    }
+
+    while (bombs < NumBombs) {
         for (let i = 0; i < map.length; i++) {
-            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10) {
+            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10 && i != num) {
                 map[i] = 10;
                 bombs++;
             }
