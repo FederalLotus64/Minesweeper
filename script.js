@@ -92,10 +92,9 @@ window.onload = function() {
     document.body.appendChild(main);
 }
 
+//Reset game
 function Load(num) {
     origin = 0;
-    bombs = 0;
-    exposed = 0;
     win = false;
     lost = false;
     Init(num);
@@ -108,6 +107,7 @@ function Load(num) {
     }
 }
 
+//Generate board
 function Init(num) {
     board.innerHTML = "";
     let a = 320/num;
@@ -170,6 +170,7 @@ function Style(num) {
     }
 }
 
+//Show 3x3 tiles
 function StyleEmpty(num) {
     Split(num);
     for (let yy = y-1; yy < y+2; yy++) {
@@ -228,7 +229,7 @@ function PlaceBombs(num) {
     } else if (size == 16) {
         NumBombs = 32;
     } else if (size == 20) {
-        NumBombs = 50;
+        NumBombs = 48;
     }
 
     Split(num);
@@ -240,6 +241,7 @@ function PlaceBombs(num) {
         }
     }
 
+    bombs = 0;
     while (bombs < NumBombs) {
         for (let i = 0; i < map.length; i++) {
             if (Math.ceil(Math.random()*16) == 1 && map[i] != 10 && state[i] != -1) {
