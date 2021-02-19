@@ -3,7 +3,7 @@ let origin = 0, bombs = 0, NumBombs, exposed = 0, x = 0, y = 0;
 let win = false, lost = false;
 
 //Generate HTML + CSS
-let header, dropdown, button, content, link1, link2, title, main, container, reset, settings, select, option, board, size = 8;
+let header, dropdown, button, content, link1, link2, title, main, container, reset, settings, select, option, board, popup, info, instructions, size = 8;
 
 window.onload = function() {
     document.body.style.cssText = "margin: 0; padding: 0; background-color: #d1d1d1;";
@@ -22,7 +22,7 @@ window.onload = function() {
     main.style.cssText = "width: 100%;";
 
     container = document.createElement('div');
-    container.style.cssText = "width: 100%; height: " + (window.innerHeight-64) + "px; display: grid; grid-template-columns: auto 128px 128px auto; grid-template-rows: 128px auto 128px; box-shadow: 0 -10px black inset;";
+    container.style.cssText = "width: 100%; height: " + (window.innerHeight-64) + "px; display: grid; grid-template-columns: 1fr 128px 128px 1fr; grid-template-rows: 128px auto 128px;";
 
     reset = document.createElement('div');
     reset.style.cssText = "margin: auto; width: 80px; height: 40px; font-family: Arial; font-weight: bold; display: flex; align-items: center; justify-content: center; background-color: white; grid-column-start: 2;";
@@ -66,6 +66,29 @@ window.onload = function() {
 
     Load(size);
 
+    popup = document.createElement('div');
+    popup.style.cssText = "width: 128px; height: 128px; position: relative; display: flex; align-items: center; justify-content: center; grid-column: 1/5; grid-row: 3;";
+
+    info = document.createElement('div');
+    info.style.cssText = "width: 64px; height: 64px; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer;";
+    info.innerHTML = "🛈";
+
+    instructions = document.createElement('div');
+    instructions.style.cssText = "box-sizing: border-box; padding: 10px; width: 192px; display: none; position: absolute; left: 0; bottom: 100%; background-color: white; box-shadow: 0 0 20px 2px black; z-index: 1;";
+    instructions.innerHTML = "How To Play:<br><br> Click on any tile to begin.<br>Right-click to flag.<br>The numbers represent the amount of bombs in a 3x3 vicinity.<br>The game is won by exposing all tiles that doesn't contain any bomb.";
+
+    info.addEventListener("click", () => {
+        if (instructions.style.display == "none") {
+            instructions.style.display = "block";
+        } else {
+            instructions.style.display = "none";
+        }        
+    });
+
+    popup.appendChild(info);
+    popup.appendChild(instructions);
+    container.appendChild(popup);
+    main.appendChild(container);
     document.body.appendChild(main);
 }
 
@@ -110,7 +133,6 @@ function Init(num) {
     }
 
     container.appendChild(board);
-    main.appendChild(container);
 }
 
 //Array <=> 2D Array conversion
