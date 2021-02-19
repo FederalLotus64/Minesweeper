@@ -75,7 +75,7 @@ window.onload = function() {
 
     instructions = document.createElement('div');
     instructions.style.cssText = "box-sizing: border-box; padding: 10px; width: 192px; display: none; position: absolute; left: 0; bottom: 100%; background-color: white; box-shadow: 0 0 20px 2px black; z-index: 1;";
-    instructions.innerHTML = "How To Play:<br><br> Click on any tile to begin.<br>Right-click to flag.<br>The numbers represent the amount of bombs in a 3x3 vicinity.<br>The game is won by exposing all tiles that doesn't contain any bomb.";
+    instructions.innerHTML = "How To Play:<br><br> Click on any tile to begin.<br>Right-click to flag.<br>The numbers represent the amount of bombs in a 3x3 vicinity around them.<br>The game is won by exposing all of the tiles without bombs.";
 
     info.addEventListener("click", () => {
         if (instructions.style.display == "none") {
