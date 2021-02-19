@@ -71,7 +71,7 @@ window.onload = function() {
 
     info = document.createElement('div');
     info.style.cssText = "width: 64px; height: 64px; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer;";
-    info.innerHTML = "🛈";
+    info.innerHTML = "&#9432;";
 
     instructions = document.createElement('div');
     instructions.style.cssText = "box-sizing: border-box; padding: 10px; width: 192px; display: none; position: absolute; left: 0; bottom: 100%; background-color: white; box-shadow: 0 0 20px 2px black; z-index: 1;";
@@ -149,52 +149,52 @@ let cells = document.getElementsByClassName('cell');
 
 //Style cells
 function Style(num) {
-    Split(num);
+    if (cells[num].style.backgroundColor == "green") {
+        cells[num].style.backgroundColor = "darkgrey";
+    } else if (cells[num].style.backgroundColor == "darkgreen") {
+        cells[num].style.backgroundColor = "grey";
+    } else if (cells[num].style.backgroundColor == "black") {
+        if ((x + (y % 2)) % 2 == 1) {
+            cells[num].style.backgroundColor = "darkgrey";
+        } else {
+            cells[num].style.backgroundColor = "grey";
+        }
+    }
     if (map[num] == 0) {
-        for (let yy = y-1; yy < y+2; yy++) {
-            for (let xx = x-1; xx < x+2; xx++) {
-                if (xx > -1 && xx < size && yy > -1 && yy < size) {
-                    if (cells[Merge(xx, yy)].style.backgroundColor == "green") {
+        cells[num].innerHTML = "";
+    } else if (map[num] < 10) {
+        cells[num].innerHTML = map[num];
+    } else {
+        cells[num].innerHTML = 'X';
+        cells[num].style.backgroundColor = "red";
+    }
+}
+
+function StyleEmpty(num) {
+    Split(num);
+    for (let yy = y-1; yy < y+2; yy++) {
+        for (let xx = x-1; xx < x+2; xx++) {
+            if (xx > -1 && xx < size && yy > -1 && yy < size) {
+                if (cells[Merge(xx, yy)].style.backgroundColor == "green") {
+                    cells[Merge(xx, yy)].style.backgroundColor = "darkgrey";
+                } else if (cells[Merge(xx, yy)].style.backgroundColor == "darkgreen") {
+                    cells[Merge(xx, yy)].style.backgroundColor = "grey";
+                } else if (cells[Merge(xx, yy)].style.backgroundColor == "black") {
+                    if ((xx + (yy % 2)) % 2 == 1) {
                         cells[Merge(xx, yy)].style.backgroundColor = "darkgrey";
-                    } else if (cells[Merge(xx, yy)].style.backgroundColor == "darkgreen") {
+                    } else  {
                         cells[Merge(xx, yy)].style.backgroundColor = "grey";
-                    } else if (cells[Merge(xx, yy)].style.backgroundColor == "black") {
-                        if ((xx + (yy % 2)) % 2 == 1) {
-                            cells[Merge(xx, yy)].style.backgroundColor = "darkgrey";
-                        } else  {
-                            cells[Merge(xx, yy)].style.backgroundColor = "grey";
-                        }
-                    }
-                    if (map[Merge(xx, yy)] == 0) {
-                        cells[Merge(xx, yy)].innerHTML = "";
-                    } else if (map[Merge(xx, yy)] < 10) {
-                        cells[Merge(xx, yy)].innerHTML = map[Merge(xx, yy)];
-                    } else {
-                        cells[Merge(xx, yy)].innerHTML = 'X';
-                        cells[Merge(xx, yy)].style.backgroundColor = "red";
                     }
                 }
+                if (map[Merge(xx, yy)] == 0) {
+                    cells[Merge(xx, yy)].innerHTML = "";
+                } else if (map[Merge(xx, yy)] < 10) {
+                    cells[Merge(xx, yy)].innerHTML = map[Merge(xx, yy)];
+                } else {
+                    cells[Merge(xx, yy)].innerHTML = 'X';
+                    cells[Merge(xx, yy)].style.backgroundColor = "red";
+                }
             }
-        }
-    } else {
-        if (cells[num].style.backgroundColor == "green") {
-            cells[num].style.backgroundColor = "darkgrey";
-        } else if (cells[num].style.backgroundColor == "darkgreen") {
-            cells[num].style.backgroundColor = "grey";
-        } else if (cells[num].style.backgroundColor == "black") {
-            if ((x + (y % 2)) % 2 == 1) {
-                cells[num].style.backgroundColor = "darkgrey";
-            } else {
-                cells[num].style.backgroundColor = "grey";
-            }
-        }
-        if (map[num] == 0) {
-            cells[num].innerHTML = "";
-        } else if (map[num] < 10) {
-            cells[num].innerHTML = map[num];
-        } else {
-            cells[num].innerHTML = 'X';
-            cells[num].style.backgroundColor = "red";
         }
     }
 }
@@ -210,7 +210,7 @@ function Show(num) {
     if (map[num] >= 10 && cells[num].style.backgroundColor != "black") {
         lost = true;
     } else if (map[num] == 0 && cells[num].style.backgroundColor != "black") {
-        Style(num);
+        StyleEmpty(num);
         state[num] = 1;
         ExposeEmpty(num);
     } else if (cells[num].style.backgroundColor != "black") {
@@ -288,7 +288,7 @@ function ExposeEmpty(num) {
     }
 
     for (let i = 0; i < queue.length; i++) {
-        Style(queue[i]);
+        StyleEmpty(queue[i]);
         ExposeEmpty(queue[i]);
     }
 }
