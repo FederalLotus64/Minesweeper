@@ -211,11 +211,11 @@ function Show(num) {
         lost = true;
     } else if (map[num] == 0 && cells[num].style.backgroundColor != "black") {
         Style(num);
-        state[num] = -1;
+        state[num] = 1;
         ExposeEmpty(num);
     } else if (cells[num].style.backgroundColor != "black") {
         Style(num);
-        state[num] = -1;
+        state[num] = 1;
     }
 
     Check();
@@ -231,9 +231,18 @@ function PlaceBombs(num) {
         NumBombs = 50;
     }
 
+    Split(num);
+    for (let yy = y-1; yy < y+2; yy++) {
+        for (let xx = x-1; xx < x+2; xx++) {
+            if (xx > -1 && xx < size && yy > -1 && yy < size) {
+                state[Merge(xx, yy)] = -1;
+            }
+        }
+    }
+
     while (bombs < NumBombs) {
         for (let i = 0; i < map.length; i++) {
-            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10 && i != num) {
+            if (Math.ceil(Math.random()*16) == 1 && map[i] != 10 && state[i] != -1) {
                 map[i] = 10;
                 bombs++;
             }
@@ -266,10 +275,10 @@ function ExposeEmpty(num) {
     for (let yy = y-1; yy < y+2; yy++) {
         for (let xx = x-1; xx < x+2; xx++) {
             if (xx > -1 && xx < size && yy > -1 && yy < size) {
-                if (queue.includes(Merge(xx, yy)) == false && map[Merge(xx, yy)] == 0 && state[Merge(xx, yy)] != -1) {
+                if (queue.includes(Merge(xx, yy)) == false && map[Merge(xx, yy)] == 0 && state[Merge(xx, yy)] != 1) {
                     queue.push(Merge(xx, yy));
                 }
-                state[Merge(xx, yy)] = -1;
+                state[Merge(xx, yy)] = 1;
             }
         }
     }
@@ -287,7 +296,7 @@ function ExposeEmpty(num) {
 //Flag cell
 function Flag(num) {
     Split(num);
-    if (state[num] != -1) {
+    if (state[num] != 1) {
         if (cells[num].style.backgroundColor == "black") {
             if ((x + (y % 2)) % 2 == 1) {
                 cells[num].style.backgroundColor = "green";
@@ -312,7 +321,7 @@ function Flag(num) {
 function ExposeAll() {
     for (let i = 0; i < map.length; i++) {
         Style(i);
-        state[i] = -1;
+        state[i] = 1;
         if (win && map[i] >= 10) {
             cells[i].style.backgroundColor = "green";
         } else if (lost && map[i] >= 10) {
@@ -325,7 +334,7 @@ function ExposeAll() {
 function Check() {
     exposed = 0;
     for (let i = 0; i < state.length; i++) {
-        if (state[i] == -1) {
+        if (state[i] == 1) {
             exposed++;
         }
     }
